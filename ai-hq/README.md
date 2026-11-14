@@ -67,3 +67,22 @@
 - 検証Issue: https://github.com/growth1invest-bot/minna-no-hondana/issues/1
 - レビュー用PR: https://github.com/growth1invest-bot/minna-no-hondana/pull/2 （このPRはChatGPT GitHub接続を使って作成）
 - 自由文AI推論や任意コード修正、その他部署の実作業は未実装。追加API費用なしにAIが無制限で動くものではない
+
+## v0.4 iPhoneから直接送信（2026-11-14）
+- GitHub Pagesの司令塔にfine-grained personal access token（Issues: Read and write）を入力してGitHubへ認証できる
+- `/user` でログイン本人 `growth1invest-bot` を確認
+- トークンはJSの一時変数だけで保持。localStorage/sessionStorage、URL、HTML、GitHub Issueに保存しない。再読み込みで破棄
+- フォームからGitHub REST APIにPOSTして、GitHub新規Issue画面とSubmit操作を省略
+- アプリ担当は `minna-no-hondana`、動画担当は非公開の `1-`、LINEと統括は `line-stamp-manager` に送る
+- 公開リポジトリのIssue作成時には公開される旨を警告し、確認を要求する
+- 台帳は接続時に3リポジトリを読み込み、結果表示ボタンでActionsボットのコメントを表示する
+- 失敗時には401/403/404等を表示し、成功を偽装しない
+- GitHub REST APIのトークン権限は対象3リポジトリに対するIssues: Read and writeを推奨（Metadata: Readは必須）。Contentsの書込み権限は不要。
+- ブラウザに貼ったトークンを保存しないため、ページ再読み込み時は再入力が必要
+
+### 重要な制限
+1. **自由文AIは未接続**。自動でコード変更するのは本棚の検索・JSON書き出しという定型タスクのみ。
+2. 動画担当は非公開Issue登録まで。YouTube公開や動画生成は自動起動しない。
+3. LINE担当は公開Issue登録後の静的点検のみ。スタンプ・絵文字の制作や審査申請は行わない。
+4. GitHub Copilot cloud agentで自由文開発を自動実行する場合はGitHub Copilotの有料プランとエージェント権限が別途必要であり、ChatGPT Plusだけでは利用できない。
+5. 公開サイトのため、トークンを扱う際はURLが公式のGitHub Pagesドメインであることを確認し、必要最小限の権限を使用する。セキュリティ上の理由でトークンをチャットに貼らない。
