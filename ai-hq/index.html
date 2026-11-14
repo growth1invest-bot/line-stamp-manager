@@ -6,7 +6,18 @@
  details summary{cursor:pointer;font-weight:700;padding:6px 0;color:#c9e1ff}details[open] summary{margin-bottom:16px}.result{white-space:pre-wrap;overflow-wrap:anywhere;color:#d7e1f2;font-size:12px;line-height:1.6;margin-top:8px}.report{font-size:12px;padding:6px 10px;margin-top:8px}button:disabled{opacity:.55;cursor:not-allowed}</style></head><body>
 <header><div class="tag">GROWTH STUDIO / AI HQ</div><h1>🏢 AI制作本部</h1><p>自由指示はChatGPTで一元化。GitHubには開発・検査・PRの結果を残します。GitHub画面への移動と毎回のトークン入力は、通常運用では不要です。</p></header>
 <main>
-<section class="panel"><div class="row"><h2>全体状況</h2><button class="secondary" id="refresh">↻ 更新</button></div><div class="metrics"><div class="metric"><b id="active">-</b><span>進行中・未完了</span></div><div class="metric"><b id="waiting">-</b><span>確認待ち</span></div><div class="metric"><b id="failed">-</b><span>問題あり</span></div></div><p id="sync" class="hint">GitHubから状況を読み込みます。</p></section>
+<section class="panel" id="work-map">
+  <div class="row"><h2>🗂 5事業の現在地</h2><a class="action secondary" href="https://github.com/growth1invest-bot/line-stamp-manager/blob/main/ai-hq/STATUS.md" target="_blank" rel="noopener">引き継ぎ台帳</a></div>
+  <p class="hint">2026/11/14時点の整理済みスナップショット。最新の実行結果と混同しないよう、下のGitHub仕事台帳も確認してください。各部署のチャットは手動で代表を決める必要があります。</p>
+  <div class="grid">
+  <div class="dept"><strong>🎬 1. YouTube動画制作</strong><small>JSON→動画生成の既存フローあり。最新の動画・投稿完了状態は未照合。</small><a href="https://github.com/growth1invest-bot/1-/actions" target="_blank" rel="noopener">制作実行履歴</a></div>
+  <div class="dept"><strong>⚙️ 2. 動画フロー開発</strong><small>数字強調の試作PR #3は未反映。映像品質の検証待ち。</small><a href="https://github.com/growth1invest-bot/1-/pull/3" target="_blank" rel="noopener">開発PR #3</a></div>
+  <div class="dept"><strong>💬 3. LINEスタンプ</strong><small>40個ZIPの品質改善が進行。別途24個×29セット案件あり。両者を分けて管理。</small><a href="https://github.com/growth1invest-bot/line-stamp-manager/issues/3" target="_blank" rel="noopener">ZIP品質管理</a>　<a href="https://github.com/growth1invest-bot/line-stamp-manager/issues/9" target="_blank" rel="noopener">29セット案件</a></div>
+  <div class="dept"><strong>😊 4. LINE絵文字</strong><small>40個＋タブの制作・申請工程を整理中。LINE側の最新状態は未照合。</small><a href="https://github.com/growth1invest-bot/line-stamp-manager/issues/4" target="_blank" rel="noopener">絵文字管理</a></div>
+  <div class="dept"><strong>📚 5. みんなの本棚</strong><small>試作HTMLあり。検索PR #2とJSON書き出しPR #4が未マージ。</small><a href="https://github.com/growth1invest-bot/minna-no-hondana/pulls" target="_blank" rel="noopener">開発PR一覧</a></div>
+  </div>
+</section>
+<section class="panel"><div class="row"><h2>全体状況</h2><button class="secondary" id="refresh">↻ 更新</button></div><div class="metrics"><div class="metric"><b id="active">-</b><span>未完了Issue（作業中とは限らない）</span></div><div class="metric"><b id="waiting">-</b><span>確認待ち</span></div><div class="metric"><b id="failed">-</b><span>問題あり</span></div></div><p id="sync" class="hint">GitHubから状況を読み込みます。</p></section>
 <section class="panel" id="ai-manager">
   <div class="row"><h2>🧠 AI統括マネージャー（推奨）</h2><span class="pill">トークン不要</span></div>
   <p>自由な指示はChatGPTのこの制作本部チャットへ。接続済みGitHubを使って調査・コード修正・PR作成・結果報告を行うルートです。WebサイトからChatGPTへ自動送信する機能ではありません。</p>
