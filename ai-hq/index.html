@@ -11,8 +11,8 @@
 <label for="team">担当事業</label><select id="team"><option value="video">🎬 YouTube動画制作</option><option value="video-dev">⚙️ 動画フロー開発</option><option value="sticker">💬 LINEスタンプ</option><option value="emoji">😊 LINE絵文字</option><option value="ios">📱 iOSアプリ</option><option value="all">🏢 全部署・統括</option></select>
 <label for="request">やってほしいこと</label><textarea id="request" rows="4" placeholder="例：LINEスタンプのZIP生成で失敗した原因を調べ、修正案と検証結果をまとめて"></textarea>
 <div class="buttons"><button id="create">指示を登録して自動点検</button><button class="secondary" id="copy">ChatGPTへの指示文をコピー</button></div>
-<p class="hint">GitHubの新規Issue画面が開きます。「Submit new issue」を押すと、担当部署への分類と安全な自動点検が起動します。結果はIssueのコメントに届きます。AIが自由文を理解して制作・修正する機能はまだありません。</p></section>
-<section class="panel"><h2>🧩 担当部署</h2><div id="departments" class="grid"></div></section>
+<p class="hint">GitHubの新規Issue登録画面が開きます。iOSアプリは「検索機能を追加」「サンプルJSONを書き出す」の2指示を実際にコード変更し、新しいブランチへ保存します。それ以外の指示や別部署は現在点検・報告まで。未対応指示で制作完了とは表示しません。</p></section>
+<section class="panel"><h2>⚡ 実際に実装できる指示</h2><p class="hint">実作業ワーカー対応：iOSアプリの「検索機能を追加」「サンプルJSONを書き出す」。それ以外の自由文AI開発やLINE申請・YouTube投稿は未接続です。実装したコードはレビュー用ブランチに保存され、自動公開されません。</p><div class="buttons"><button class="secondary" id="quick-search">本棚に検索機能を追加</button><button class="secondary" id="quick-export">本棚サンプルをJSON書き出し</button></div></section><section class="panel"><h2>🧩 担当部署</h2><div id="departments" class="grid"></div></section>
 <section class="panel"><div class="row"><h2>📋 仕事台帳・検査結果</h2><a class="action secondary" href="https://github.com/growth1invest-bot/line-stamp-manager/issues" target="_blank" rel="noopener">全件を見る</a></div><div id="issues" class="muted">読み込み中…</div></section>
 <section class="panel"><h2>🔧 各チームの作業場所</h2><div class="buttons">
 <a class="action secondary" href="https://github.com/growth1invest-bot/1-/actions" target="_blank" rel="noopener">YouTube Actions</a>
@@ -22,6 +22,7 @@
 </div><p class="hint warning">動画リポジトリは非公開のため、この公開ページから実行状況を直接取得しません。公開してよい情報だけをIssueで管理します。</p></section>
 </main><script>
 const REPO='growth1invest-bot/line-stamp-manager';
+const APP_REPO='growth1invest-bot/minna-no-hondana';
 const dept=[
 ['video','🎬 動画制作','企画・台本・動画・公開準備','YouTube動画制作'],
 ['video-dev','⚙️ システム開発','Remotion・スキーマ・Actions・テスト','動画フロー開発'],
@@ -31,18 +32,21 @@ const dept=[
 ['all','🧠 統括・品質管理','タスク配分・進捗・品質・報告','統括']
 ];
 const $=id=>document.getElementById(id);
+$('quick-search').onclick=()=>{$('team').value='ios';$('request').value='みんなの本棚に検索機能を追加して';window.scrollTo({top:180,behavior:'smooth'})};
+$('quick-export').onclick=()=>{$('team').value='ios';$('request').value='みんなの本棚のサンプルデータをJSON書き出しできるようにして';window.scrollTo({top:180,behavior:'smooth'})};
 $('departments').innerHTML=dept.map(d=>'<div class="dept"><strong>'+d[1]+'</strong><small>'+d[2]+'</small><button class="secondary pick" data-team="'+d[0]+'">仕事を依頼</button></div>').join('');
 document.querySelectorAll('.pick').forEach(b=>b.addEventListener('click',()=>{$('team').value=b.dataset.team;$('request').focus();window.scrollTo({top:180,behavior:'smooth'})}));
 function draft(){let t=$('team').value;let req=$('request').value.trim();if(!req){alert('指示内容を入力してください');return null;}let d=dept.find(d=>d[0]===t);return {title:'['+d[3]+'] '+req.replace(/\s+/g,' ').slice(0,75),body:'## 指示\n'+req+'\n\n## 担当\n'+d[3]+'\n\n## 進行管理\n- [ ] 現状確認\n- [ ] 実施または安全な実装案\n- [ ] 品質検証\n- [ ] 結果・成果物URL・未完了項目を記録\n\n## 安全条件\n既存本番を壊さず、公開・申請・課金・本番変更前には必要な承認を得る。未検証を完了扱いしない。\n\n部署: '+t};}
-$('create').onclick=()=>{const d=draft();if(!d)return;window.open('https://github.com/'+REPO+'/issues/new?'+new URLSearchParams({title:d.title,body:d.body}).toString(),'_blank','noopener')};
+$('create').onclick=()=>{const d=draft();if(!d)return;const target=$('team').value==='ios'?APP_REPO:REPO;window.open('https://github.com/'+target+'/issues/new?'+new URLSearchParams({title:d.title,body:d.body}).toString(),'_blank','noopener')};
 $('copy').onclick=async()=>{const d=draft();if(!d)return;const prompt='AI制作本部の統括マネージャーとして、次の依頼を担当チームへ振り分け、可能な実作業と検証を進め、GitHub Issueに進捗を記録してください。\n'+d.body;try{await navigator.clipboard.writeText(prompt);alert('指示文をコピーしました')}catch{window.prompt('下記をコピーしてください',prompt)}};
 function safe(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 async function refresh(){ $('sync').textContent='GitHubを確認中…';
 try{let res=await fetch('https://api.github.com/repos/'+REPO+'/issues?state=open&per_page=100',{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});if(!res.ok)throw Error('GitHub API '+res.status);let arr=(await res.json()).filter(x=>!x.pull_request);
+const appRes=await fetch('https://api.github.com/repos/'+APP_REPO+'/issues?state=open&per_page=100',{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});let appIssues=[];if(appRes.ok)appIssues=(await appRes.json()).filter(x=>!x.pull_request).map(x=>({...x,_source:'本棚'}));arr=arr.map(x=>({...x,_source:'HQ'})).concat(appIssues).sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at));
 let tagged=(s)=>arr.filter(x=>(x.labels||[]).some(l=>l.name===s));
 $('active').textContent=arr.length;$('waiting').textContent=tagged('needs-approval').length;$('failed').textContent=tagged('blocked').length;
-$('issues').innerHTML=arr.length?arr.slice(0,30).map(x=>'<div class="entry"><a target="_blank" rel="noopener" href="'+safe(x.html_url)+'">'+safe(x.title)+'</a><small>#'+x.number+' · '+safe((x.labels||[]).map(l=>l.name).join(' / ')||'未分類')+' · 更新 '+new Date(x.updated_at).toLocaleString('ja-JP')+'</small></div>').join(''):'<p>未完了の仕事はありません。</p>';
-$('sync').textContent='最終取得 '+new Date().toLocaleString('ja-JP')+' / 公開Issueのみ（最大100件）';
+$('issues').innerHTML=arr.length?arr.slice(0,30).map(x=>'<div class="entry"><a target="_blank" rel="noopener" href="'+safe(x.html_url)+'">'+safe(x.title)+'</a><small>'+safe(x._source||'HQ')+' #'+x.number+' · '+safe((x.labels||[]).map(l=>l.name).join(' / ')||'未分類')+' · 更新 '+new Date(x.updated_at).toLocaleString('ja-JP')+'</small></div>').join(''):'<p>未完了の仕事はありません。</p>';
+$('sync').textContent='最終取得 '+new Date().toLocaleString('ja-JP')+' / 公開Issueのみ（各リポジトリ最大100件）';
 }catch(e){$('active').textContent=$('waiting').textContent=$('failed').textContent='?';$('sync').textContent='取得できませんでした：'+e.message+'。GitHub側で確認してください。';$('issues').textContent='GitHubへの接続に失敗しました。';}}
 $('refresh').onclick=refresh;refresh();
 </script></body></html>
