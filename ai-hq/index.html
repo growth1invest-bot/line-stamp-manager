@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>AI制作本部 | Growth Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#151f31;--edge:#2b3950;--txt:#eff4fa;--dim:#aab8cd;--accent:#64a7ff;--good:#6cdda8;--warn:#ffcc70}*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--txt);margin:0}header{padding:24px 18px 16px;max-width:960px;margin:auto}h1{font-size:26px;margin:4px 0}h2{font-size:18px;margin:0 0 12px}p{color:var(--dim);line-height:1.55}main{max-width:960px;margin:auto;padding:0 14px 45px}.tag{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:2px}.panel{background:var(--panel);border:1px solid var(--edge);padding:17px;border-radius:16px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.dept{background:#101a2b;border:1px solid var(--edge);border-radius:12px;padding:13px}.dept strong{display:block;margin-bottom:7px}.dept small{display:block;color:var(--dim);min-height:38px;line-height:1.5}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#101a2b;padding:12px;border-radius:12px}.metric b{display:block;font-size:25px}.metric span{font-size:11px;color:var(--dim)}button,.action{background:#3479de;color:#fff;border:0;border-radius:10px;padding:11px 14px;font-weight:700;text-decoration:none;display:inline-block;cursor:pointer}button.secondary,.action.secondary{background:#273751}input,textarea,select{width:100%;border:1px solid #42526c;background:#0b1220;color:var(--txt);border-radius:9px;padding:12px;font:inherit}label{display:block;font-size:13px;color:var(--dim);margin:12px 0 6px}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.entry{border-bottom:1px solid var(--edge);padding:12px 0}.entry:last-child{border:0}.entry a{color:#c9e1ff;text-decoration:none}.entry small{color:var(--dim);display:block;margin-top:5px}.pill{padding:3px 8px;background:#284260;border-radius:30px;color:#d9efff;font-size:11px}.hint{font-size:12px;color:var(--dim)}.warning{color:var(--warn)}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.muted{color:var(--dim)}@media(max-width:440px){h1{font-size:23px}.metrics{gap:5px}.metric{padding:9px}.metric b{font-size:21px}}
+</style></head><body>
+<header><div class="tag">GROWTH STUDIO / AI HQ</div><h1>🏢 AI制作本部</h1><p>5事業の仕事を1か所から確認・指示。担当チームは記録上の役割であり、AIの自動稼働を保証するものではありません。</p></header>
+<main>
+<section class="panel"><div class="row"><h2>全体状況</h2><button class="secondary" id="refresh">↻ 更新</button></div><div class="metrics"><div class="metric"><b id="active">-</b><span>進行中・未完了</span></div><div class="metric"><b id="waiting">-</b><span>確認待ち</span></div><div class="metric"><b id="failed">-</b><span>問題あり</span></div></div><p id="sync" class="hint">GitHubから状況を読み込みます。</p></section>
+<section class="panel"><h2>📣 統括マネージャーへ指示</h2>
+<label for="team">担当事業</label><select id="team"><option value="video">🎬 YouTube動画制作</option><option value="video-dev">⚙️ 動画フロー開発</option><option value="sticker">💬 LINEスタンプ</option><option value="emoji">😊 LINE絵文字</option><option value="ios">📱 iOSアプリ</option><option value="all">🏢 全部署・統括</option></select>
+<label for="request">やってほしいこと</label><textarea id="request" rows="4" placeholder="例：LINEスタンプのZIP生成で失敗した原因を調べ、修正案と検証結果をまとめて"></textarea>
+<div class="buttons"><button id="create">GitHubに仕事を登録</button><button class="secondary" id="copy">ChatGPTへの指示文をコピー</button></div>
+<p class="hint">GitHubに登録すると、新規Issueの確認画面が開きます。「Submit new issue」で正式登録されます。登録だけではAIによる制作は自動実行されません。</p></section>
+<section class="panel"><h2>🧩 担当部署</h2><div id="departments" class="grid"></div></section>
+<section class="panel"><div class="row"><h2>📋 仕事台帳</h2><a class="action secondary" href="https://github.com/growth1invest-bot/line-stamp-manager/issues" target="_blank" rel="noopener">全件を見る</a></div><div id="issues" class="muted">読み込み中…</div></section>
+<section class="panel"><h2>🔧 各チームの作業場所</h2><div class="buttons">
+<a class="action secondary" href="https://github.com/growth1invest-bot/1-/actions" target="_blank" rel="noopener">YouTube Actions</a>
+<a class="action secondary" href="https://github.com/growth1invest-bot/1-/pulls" target="_blank" rel="noopener">動画開発 PR</a>
+<a class="action secondary" href="https://github.com/growth1invest-bot/minna-no-hondana" target="_blank" rel="noopener">みんなの本棚</a>
+<a class="action secondary" href="https://github.com/growth1invest-bot/line-stamp-manager" target="_blank" rel="noopener">LINE制作管理</a>
+</div><p class="hint warning">動画リポジトリは非公開のため、この公開ページから実行状況を直接取得しません。公開してよい情報だけをIssueで管理します。</p></section>
+</main><script>
+const REPO='growth1invest-bot/line-stamp-manager';
+const dept=[
+['video','🎬 動画制作','企画・台本・動画・公開準備','YouTube動画制作'],
+['video-dev','⚙️ システム開発','Remotion・スキーマ・Actions・テスト','動画フロー開発'],
+['sticker','💬 LINEスタンプ','作品制作・ZIP・申請準備','LINEスタンプ'],
+['emoji','😊 LINE絵文字','絵文字制作・ZIP・申請準備','LINE絵文字'],
+['ios','📱 iOSアプリ','みんなの本棚・Codex・検証','iOSアプリ'],
+['all','🧠 統括・品質管理','タスク配分・進捗・品質・報告','統括']
+];
+const $=id=>document.getElementById(id);
+$('departments').innerHTML=dept.map(d=>'<div class="dept"><strong>'+d[1]+'</strong><small>'+d[2]+'</small><button class="secondary pick" data-team="'+d[0]+'">仕事を依頼</button></div>').join('');
+document.querySelectorAll('.pick').forEach(b=>b.addEventListener('click',()=>{$('team').value=b.dataset.team;$('request').focus();window.scrollTo({top:180,behavior:'smooth'})}));
+function draft(){let t=$('team').value;let req=$('request').value.trim();if(!req){alert('指示内容を入力してください');return null;}let d=dept.find(d=>d[0]===t);return {title:'['+d[3]+'] '+req.replace(/\s+/g,' ').slice(0,75),body:'## 指示\n'+req+'\n\n## 担当\n'+d[3]+'\n\n## 進行管理\n- [ ] 現状確認\n- [ ] 実施または安全な実装案\n- [ ] 品質検証\n- [ ] 結果・成果物URL・未完了項目を記録\n\n## 安全条件\n既存本番を壊さず、公開・申請・課金・本番変更前には必要な承認を得る。未検証を完了扱いしない。\n\n部署: '+t};}
+$('create').onclick=()=>{const d=draft();if(!d)return;window.open('https://github.com/'+REPO+'/issues/new?'+new URLSearchParams({title:d.title,body:d.body}).toString(),'_blank','noopener')};
+$('copy').onclick=async()=>{const d=draft();if(!d)return;const prompt='AI制作本部の統括マネージャーとして、次の依頼を担当チームへ振り分け、可能な実作業と検証を進め、GitHub Issueに進捗を記録してください。\n'+d.body;try{await navigator.clipboard.writeText(prompt);alert('指示文をコピーしました')}catch{prompt('下記をコピーしてください',prompt)}};
+function safe(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function refresh(){ $('sync').textContent='GitHubを確認中…';
+try{let res=await fetch('https://api.github.com/repos/'+REPO+'/issues?state=open&per_page=100',{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});if(!res.ok)throw Error('GitHub API '+res.status);let arr=(await res.json()).filter(x=>!x.pull_request);
+let tagged=(s)=>arr.filter(x=>(x.labels||[]).some(l=>l.name===s));
+$('active').textContent=arr.length;$('waiting').textContent=tagged('needs-approval').length;$('failed').textContent=tagged('blocked').length;
+$('issues').innerHTML=arr.length?arr.slice(0,30).map(x=>'<div class="entry"><a target="_blank" rel="noopener" href="'+safe(x.html_url)+'">'+safe(x.title)+'</a><small>#'+x.number+' · '+safe((x.labels||[]).map(l=>l.name).join(' / ')||'未分類')+' · 更新 '+new Date(x.updated_at).toLocaleString('ja-JP')+'</small></div>').join(''):'<p>未完了の仕事はありません。</p>';
+$('sync').textContent='最終取得 '+new Date().toLocaleString('ja-JP')+' / 公開Issueのみ（最大100件）';
+}catch(e){$('active').textContent=$('waiting').textContent=$('failed').textContent='?';$('sync').textContent='取得できませんでした：'+e.message+'。GitHub側で確認してください。';$('issues').textContent='GitHubへの接続に失敗しました。';}}
+$('refresh').onclick=refresh;refresh();
+</script></body></html>
