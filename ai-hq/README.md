@@ -57,3 +57,13 @@
 - 外部公開、LINE申請、YouTube自動投稿、AIコード修正は未接続
 
 **注意:** GitHubの新規Issueフォームから「Submit new issue」を押して初めて処理が開始されます。この仕組みはChatGPTやCodexを無人で継続稼働させるものではありません。
+
+## v0.3 実行ワーカー（2026-11-14）
+- iOS担当の指示は司令塔から `growth1invest-bot/minna-no-hondana` のIssueへ登録する
+- `minna-no-hondana/.github/workflows/ai-hq-implement.yml` がIssueを検出して実コードを変更
+- 対応済み: 「検索機能を追加」「サンプルJSONを書き出す」。未対応指示では明示的に未実施を報告
+- コードは `hq/issue-N-RUN` ブランチへ保存、HTML構造テストを実行、Issueに結果コメント
+- 自動PRの作成はリポジトリのActions設定で禁止されていることを確認。GitHub Settings > Actions > General > Workflow permissions > Allow GitHub Actions to create and approve pull requests が必要
+- 検証Issue: https://github.com/growth1invest-bot/minna-no-hondana/issues/1
+- レビュー用PR: https://github.com/growth1invest-bot/minna-no-hondana/pull/2 （このPRはChatGPT GitHub接続を使って作成）
+- 自由文AI推論や任意コード修正、その他部署の実作業は未実装。追加API費用なしにAIが無制限で動くものではない
