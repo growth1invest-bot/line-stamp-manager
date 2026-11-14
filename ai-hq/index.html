@@ -3,17 +3,24 @@
 <title>AI制作本部 | Growth Studio</title>
 <style>
 :root{color-scheme:dark;--bg:#0b1220;--panel:#151f31;--edge:#2b3950;--txt:#eff4fa;--dim:#aab8cd;--accent:#64a7ff;--good:#6cdda8;--warn:#ffcc70}*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--txt);margin:0}header{padding:24px 18px 16px;max-width:960px;margin:auto}h1{font-size:26px;margin:4px 0}h2{font-size:18px;margin:0 0 12px}p{color:var(--dim);line-height:1.55}main{max-width:960px;margin:auto;padding:0 14px 45px}.tag{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:2px}.panel{background:var(--panel);border:1px solid var(--edge);padding:17px;border-radius:16px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.dept{background:#101a2b;border:1px solid var(--edge);border-radius:12px;padding:13px}.dept strong{display:block;margin-bottom:7px}.dept small{display:block;color:var(--dim);min-height:38px;line-height:1.5}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#101a2b;padding:12px;border-radius:12px}.metric b{display:block;font-size:25px}.metric span{font-size:11px;color:var(--dim)}button,.action{background:#3479de;color:#fff;border:0;border-radius:10px;padding:11px 14px;font-weight:700;text-decoration:none;display:inline-block;cursor:pointer}button.secondary,.action.secondary{background:#273751}input,textarea,select{width:100%;border:1px solid #42526c;background:#0b1220;color:var(--txt);border-radius:9px;padding:12px;font:inherit}label{display:block;font-size:13px;color:var(--dim);margin:12px 0 6px}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.entry{border-bottom:1px solid var(--edge);padding:12px 0}.entry:last-child{border:0}.entry a{color:#c9e1ff;text-decoration:none}.entry small{color:var(--dim);display:block;margin-top:5px}.pill{padding:3px 8px;background:#284260;border-radius:30px;color:#d9efff;font-size:11px}.hint{font-size:12px;color:var(--dim)}.warning{color:var(--warn)}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.muted{color:var(--dim)}@media(max-width:440px){h1{font-size:23px}.metrics{gap:5px}.metric{padding:9px}.metric b{font-size:21px}}
-</style></head><body>
+ .result{white-space:pre-wrap;overflow-wrap:anywhere;color:#d7e1f2;font-size:12px;line-height:1.6;margin-top:8px}.report{font-size:12px;padding:6px 10px;margin-top:8px}button:disabled{opacity:.55;cursor:not-allowed}</style></head><body>
 <header><div class="tag">GROWTH STUDIO / AI HQ</div><h1>🏢 AI制作本部</h1><p>5事業の指示受付、担当振り分け、読取専用の自動点検、結果確認をまとめた司令塔です。制作・公開の完全自動化は未接続です。</p></header>
 <main>
 <section class="panel"><div class="row"><h2>全体状況</h2><button class="secondary" id="refresh">↻ 更新</button></div><div class="metrics"><div class="metric"><b id="active">-</b><span>進行中・未完了</span></div><div class="metric"><b id="waiting">-</b><span>確認待ち</span></div><div class="metric"><b id="failed">-</b><span>問題あり</span></div></div><p id="sync" class="hint">GitHubから状況を読み込みます。</p></section>
+<section class="panel"><h2>🔐 GitHubに直接接続</h2>
+<p class="hint">最初に一度、GitHubのfine-grainedトークン（対象リポジトリの Issues: Read and write のみ）を貼り付けて接続します。トークンはブラウザ内の一時メモリだけに保持し、ページ再読み込みで消えます。公開ページやGitHub Issueには保存しません。</p>
+<label for="gh-token">GitHub Fine-grained Personal Access Token</label>
+<input type="password" id="gh-token" placeholder="github_pat_…" autocomplete="off" autocapitalize="off" spellcheck="false">
+<div class="buttons"><button id="connect" class="secondary">接続を確認</button><button id="disconnect" class="secondary" disabled>切断</button><a class="action secondary" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">初回のトークン発行</a></div>
+<p id="auth-status" class="hint" role="status" aria-live="polite">未接続。トークンを貼って接続してください。</p>
+</section>
 <section class="panel"><h2>📣 統括マネージャーへ指示</h2>
 <label for="team">担当事業</label><select id="team"><option value="video">🎬 YouTube動画制作</option><option value="video-dev">⚙️ 動画フロー開発</option><option value="sticker">💬 LINEスタンプ</option><option value="emoji">😊 LINE絵文字</option><option value="ios">📱 iOSアプリ</option><option value="all">🏢 全部署・統括</option></select>
 <label for="request">やってほしいこと</label><textarea id="request" rows="4" placeholder="例：LINEスタンプのZIP生成で失敗した原因を調べ、修正案と検証結果をまとめて"></textarea>
-<div class="buttons"><button id="create">指示を登録して自動点検</button><button class="secondary" id="copy">ChatGPTへの指示文をコピー</button></div>
-<p class="hint">GitHubの新規Issue登録画面が開きます。iOSアプリは「検索機能を追加」「サンプルJSONを書き出す」の2指示を実際にコード変更し、新しいブランチへ保存します。それ以外の指示や別部署は現在点検・報告まで。未対応指示で制作完了とは表示しません。</p></section>
+<div class="buttons"><button id="create">司令塔から直接送信</button><button class="secondary" id="copy">ChatGPTへの指示文をコピー</button></div><p id="submit-result" class="hint" role="status" aria-live="polite"></p>
+<p class="hint">接続後は画面内で直接送信します。iOSアプリの2種類の対応済み機能は実コード変更とレビュー用PRを起動します。LINEは自動点検、動画は記録のみです。自由文のAI開発やLINE申請はまだ動きません。公開リポジトリへの指示はGitHub上で公開されるため、個人情報や秘密情報を書かないでください。</p></section>
 <section class="panel"><h2>⚡ 実際に実装できる指示</h2><p class="hint">実作業ワーカー対応：iOSアプリの「検索機能を追加」「サンプルJSONを書き出す」。それ以外の自由文AI開発やLINE申請・YouTube投稿は未接続です。実装したコードはレビュー用ブランチに保存され、自動公開されません。</p><div class="buttons"><button class="secondary" id="quick-search">本棚に検索機能を追加</button><button class="secondary" id="quick-export">本棚サンプルをJSON書き出し</button></div></section><section class="panel"><h2>🧩 担当部署</h2><div id="departments" class="grid"></div></section>
-<section class="panel"><div class="row"><h2>📋 仕事台帳・検査結果</h2><a class="action secondary" href="https://github.com/growth1invest-bot/line-stamp-manager/issues" target="_blank" rel="noopener">全件を見る</a></div><div id="issues" class="muted">読み込み中…</div></section>
+<section class="panel"><div class="row"><h2>📋 仕事台帳・検査結果</h2><a class="action secondary" href="https://github.com/growth1invest-bot/line-stamp-manager/issues" target="_blank" rel="noopener">全件を見る</a></div><div id="issues" class="muted">読み込み中…</div><p id="latest-report" class="hint" aria-live="polite"></p></section>
 <section class="panel"><h2>🔧 各チームの作業場所</h2><div class="buttons">
 <a class="action secondary" href="https://github.com/growth1invest-bot/1-/actions" target="_blank" rel="noopener">YouTube Actions</a>
 <a class="action secondary" href="https://github.com/growth1invest-bot/1-/pulls" target="_blank" rel="noopener">動画開発 PR</a>
@@ -23,6 +30,35 @@
 </main><script>
 const REPO='growth1invest-bot/line-stamp-manager';
 const APP_REPO='growth1invest-bot/minna-no-hondana';
+const VIDEO_REPO='growth1invest-bot/1-';
+let accessToken='';
+let sessionUser='';
+function repoFor(team){return team==='ios'?APP_REPO:(team==='video'||team==='video-dev'?VIDEO_REPO:REPO)}
+async function githubRequest(path, options={}){
+  const headers={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',...(accessToken?{'Authorization':'Bearer '+accessToken}:{})};
+  if(options.body)headers['Content-Type']='application/json';
+  const response=await fetch('https://api.github.com'+path,{...options,headers:{...headers,...(options.headers||{})},cache:'no-store'});
+  let payload;try{payload=await response.json()}catch{payload={}};
+  if(!response.ok)throw new Error('GitHub '+response.status+': '+(payload.message||'処理できませんでした'));
+  return payload;
+}
+function authMessage(t){$('auth-status').textContent=t}
+async function connect(){
+  const t=$('gh-token').value.trim();
+  if(!t){authMessage('トークンを入力してください。');return}
+  $('connect').disabled=true;authMessage('GitHubでトークンを確認中…');
+  accessToken=t;
+  try{
+    const user=await githubRequest('/user');
+    const allowed='growth1invest-bot';
+    if(user.login!==allowed){accessToken='';throw new Error('この司令塔は '+allowed+' 専用です。GitHubのログインアカウントを確認してください。')}
+    sessionUser=user.login;
+    $('gh-token').value='';$('connect').disabled=false;$('disconnect').disabled=false;
+    authMessage('接続済み：'+sessionUser+'。このタブを閉じると認証情報は消えます。');await refresh();
+  }catch(error){accessToken='';sessionUser='';$('connect').disabled=false;authMessage('接続失敗：'+error.message)}
+}
+function disconnect(){accessToken='';sessionUser='';$('gh-token').value='';$('disconnect').disabled=true;authMessage('切断しました。再接続にはトークンが必要です。');refresh()}
+
 const dept=[
 ['video','🎬 動画制作','企画・台本・動画・公開準備','YouTube動画制作'],
 ['video-dev','⚙️ システム開発','Remotion・スキーマ・Actions・テスト','動画フロー開発'],
@@ -37,16 +73,59 @@ $('quick-export').onclick=()=>{$('team').value='ios';$('request').value='みん�
 $('departments').innerHTML=dept.map(d=>'<div class="dept"><strong>'+d[1]+'</strong><small>'+d[2]+'</small><button class="secondary pick" data-team="'+d[0]+'">仕事を依頼</button></div>').join('');
 document.querySelectorAll('.pick').forEach(b=>b.addEventListener('click',()=>{$('team').value=b.dataset.team;$('request').focus();window.scrollTo({top:180,behavior:'smooth'})}));
 function draft(){let t=$('team').value;let req=$('request').value.trim();if(!req){alert('指示内容を入力してください');return null;}let d=dept.find(d=>d[0]===t);return {title:'['+d[3]+'] '+req.replace(/\s+/g,' ').slice(0,75),body:'## 指示\n'+req+'\n\n## 担当\n'+d[3]+'\n\n## 進行管理\n- [ ] 現状確認\n- [ ] 実施または安全な実装案\n- [ ] 品質検証\n- [ ] 結果・成果物URL・未完了項目を記録\n\n## 安全条件\n既存本番を壊さず、公開・申請・課金・本番変更前には必要な承認を得る。未検証を完了扱いしない。\n\n部署: '+t};}
-$('create').onclick=()=>{const d=draft();if(!d)return;const target=$('team').value==='ios'?APP_REPO:REPO;window.open('https://github.com/'+target+'/issues/new?'+new URLSearchParams({title:d.title,body:d.body}).toString(),'_blank','noopener')};
+$('connect').onclick=connect;
+$('disconnect').onclick=disconnect;
+$('create').onclick=async()=>{
+  const d=draft();if(!d)return;
+  if(!accessToken){$('submit-result').textContent='最初にGitHubへ接続してください。';return}
+  const team=$('team').value;
+  const target=repoFor(team);
+  if(target!==VIDEO_REPO && !window.confirm('この指示は公開GitHub Issueとして保存されます。秘密情報を含まないことを確認しましたか？'))return;
+  const button=$('create');button.disabled=true;$('submit-result').textContent='送信中…';
+  try{
+    const issue=await githubRequest('/repos/'+target+'/issues',{method:'POST',body:JSON.stringify({title:d.title,body:d.body})});
+    const capability=team==='ios'?'実コード変更（対応している2機能のみ）':(team==='video'||team==='video-dev'?'台帳登録のみ':'静的検査のみ');
+    $('submit-result').textContent='✓ 依頼 #'+issue.number+' を登録しました。実行能力：'+capability+'。下の台帳に結果が反映されます。';
+    $('request').value='';
+    await refresh();
+  }catch(err){$('submit-result').textContent='送信失敗：'+err.message+'。トークンのリポジトリ選択と Issues: Read and write を確認してください。'}
+  finally{button.disabled=false}
+};
 $('copy').onclick=async()=>{const d=draft();if(!d)return;const prompt='AI制作本部の統括マネージャーとして、次の依頼を担当チームへ振り分け、可能な実作業と検証を進め、GitHub Issueに進捗を記録してください。\n'+d.body;try{await navigator.clipboard.writeText(prompt);alert('指示文をコピーしました')}catch{window.prompt('下記をコピーしてください',prompt)}};
 function safe(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-async function refresh(){ $('sync').textContent='GitHubを確認中…';
-try{let res=await fetch('https://api.github.com/repos/'+REPO+'/issues?state=open&per_page=100',{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});if(!res.ok)throw Error('GitHub API '+res.status);let arr=(await res.json()).filter(x=>!x.pull_request);
-const appRes=await fetch('https://api.github.com/repos/'+APP_REPO+'/issues?state=open&per_page=100',{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});let appIssues=[];if(appRes.ok)appIssues=(await appRes.json()).filter(x=>!x.pull_request).map(x=>({...x,_source:'本棚'}));arr=arr.map(x=>({...x,_source:'HQ'})).concat(appIssues).sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at));
-let tagged=(s)=>arr.filter(x=>(x.labels||[]).some(l=>l.name===s));
-$('active').textContent=arr.length;$('waiting').textContent=tagged('needs-approval').length;$('failed').textContent=tagged('blocked').length;
-$('issues').innerHTML=arr.length?arr.slice(0,30).map(x=>'<div class="entry"><a target="_blank" rel="noopener" href="'+safe(x.html_url)+'">'+safe(x.title)+'</a><small>'+safe(x._source||'HQ')+' #'+x.number+' · '+safe((x.labels||[]).map(l=>l.name).join(' / ')||'未分類')+' · 更新 '+new Date(x.updated_at).toLocaleString('ja-JP')+'</small></div>').join(''):'<p>未完了の仕事はありません。</p>';
-$('sync').textContent='最終取得 '+new Date().toLocaleString('ja-JP')+' / 公開Issueのみ（各リポジトリ最大100件）';
-}catch(e){$('active').textContent=$('waiting').textContent=$('failed').textContent='?';$('sync').textContent='取得できませんでした：'+e.message+'。GitHub側で確認してください。';$('issues').textContent='GitHubへの接続に失敗しました。';}}
+async function refresh(){
+  $('sync').textContent='GitHubから仕事を取得中…';
+  try{
+    const repos=[REPO,APP_REPO,VIDEO_REPO];
+    const records=await Promise.all(repos.map(async repo=>{
+      if(repo===VIDEO_REPO&&!accessToken)return [];
+      try{
+        const issues=await githubRequest('/repos/'+repo+'/issues?state=open&per_page=100');
+        return issues.filter(i=>!i.pull_request).map(i=>({...i,_source:repo===APP_REPO?'本棚':repo===VIDEO_REPO?'YouTube':'LINE/HQ',_repo:repo}));
+      }catch(error){if(repo===REPO)throw error;return []}
+    }));
+    const arr=records.flat().sort((x,y)=>new Date(y.updated_at)-new Date(x.updated_at));
+    const tagged=label=>arr.filter(x=>(x.labels||[]).some(l=>l.name===label));
+    $('active').textContent=arr.length;
+    $('waiting').textContent=tagged('needs-approval').length;
+    $('failed').textContent=tagged('blocked').length;
+    $('issues').innerHTML=arr.length?arr.slice(0,30).map(x=>
+      '<div class="entry"><a href="'+safe(x.html_url)+'" target="_blank" rel="noopener">'+safe(x.title)+'</a>'+
+      '<small>'+safe(x._source)+' #'+x.number+' · '+safe((x.labels||[]).map(l=>l.name).join(' / ')||'未分類')+
+      ' · 更新 '+new Date(x.updated_at).toLocaleString('ja-JP')+'</small>'+
+      '<button class="secondary report" data-repo="'+safe(x._repo)+'" data-no="'+x.number+'">結果を表示</button>'+
+      '<div class="result" id="result-'+safe(x._source)+'-'+x.number+'"></div></div>'
+    ).join(''):'<p>未完了の仕事はありません。</p>';
+    document.querySelectorAll('.report').forEach(btn=>btn.onclick=async()=>{
+      const node=btn.nextElementSibling;node.textContent='結果を読み込み中…';
+      try{
+        const comments=await githubRequest('/repos/'+btn.dataset.repo+'/issues/'+btn.dataset.no+'/comments?per_page=100');
+        const bot=comments.filter(c=>c.user?.login==='github-actions[bot]');
+        node.textContent=bot.length?bot.at(-1).body:'ワーカーからの報告はまだありません。完了まで待つ必要があります。';
+      }catch(error){node.textContent='取得失敗：'+error.message}
+    });
+    $('sync').textContent='取得：'+new Date().toLocaleString('ja-JP')+'。'+(accessToken?'接続済み（非公開含む）':'公開リポジトリのみ');
+  }catch(error){$('sync').textContent='台帳取得失敗：'+error.message;$('active').textContent=$('waiting').textContent=$('failed').textContent='?'}
+}
 $('refresh').onclick=refresh;refresh();
 </script></body></html>
