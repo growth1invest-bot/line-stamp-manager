@@ -3,18 +3,39 @@
 <title>AI制作本部 | Growth Studio</title>
 <style>
 :root{color-scheme:dark;--bg:#0b1220;--panel:#151f31;--edge:#2b3950;--txt:#eff4fa;--dim:#aab8cd;--accent:#64a7ff;--good:#6cdda8;--warn:#ffcc70}*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;background:var(--bg);color:var(--txt);margin:0}header{padding:24px 18px 16px;max-width:960px;margin:auto}h1{font-size:26px;margin:4px 0}h2{font-size:18px;margin:0 0 12px}p{color:var(--dim);line-height:1.55}main{max-width:960px;margin:auto;padding:0 14px 45px}.tag{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:2px}.panel{background:var(--panel);border:1px solid var(--edge);padding:17px;border-radius:16px;margin:12px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.dept{background:#101a2b;border:1px solid var(--edge);border-radius:12px;padding:13px}.dept strong{display:block;margin-bottom:7px}.dept small{display:block;color:var(--dim);min-height:38px;line-height:1.5}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#101a2b;padding:12px;border-radius:12px}.metric b{display:block;font-size:25px}.metric span{font-size:11px;color:var(--dim)}button,.action{background:#3479de;color:#fff;border:0;border-radius:10px;padding:11px 14px;font-weight:700;text-decoration:none;display:inline-block;cursor:pointer}button.secondary,.action.secondary{background:#273751}input,textarea,select{width:100%;border:1px solid #42526c;background:#0b1220;color:var(--txt);border-radius:9px;padding:12px;font:inherit}label{display:block;font-size:13px;color:var(--dim);margin:12px 0 6px}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.entry{border-bottom:1px solid var(--edge);padding:12px 0}.entry:last-child{border:0}.entry a{color:#c9e1ff;text-decoration:none}.entry small{color:var(--dim);display:block;margin-top:5px}.pill{padding:3px 8px;background:#284260;border-radius:30px;color:#d9efff;font-size:11px}.hint{font-size:12px;color:var(--dim)}.warning{color:var(--warn)}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.muted{color:var(--dim)}@media(max-width:440px){h1{font-size:23px}.metrics{gap:5px}.metric{padding:9px}.metric b{font-size:21px}}
- .result{white-space:pre-wrap;overflow-wrap:anywhere;color:#d7e1f2;font-size:12px;line-height:1.6;margin-top:8px}.report{font-size:12px;padding:6px 10px;margin-top:8px}button:disabled{opacity:.55;cursor:not-allowed}</style></head><body>
-<header><div class="tag">GROWTH STUDIO / AI HQ</div><h1>🏢 AI制作本部</h1><p>5事業の指示受付、担当振り分け、読取専用の自動点検、結果確認をまとめた司令塔です。制作・公開の完全自動化は未接続です。</p></header>
+ details summary{cursor:pointer;font-weight:700;padding:6px 0;color:#c9e1ff}details[open] summary{margin-bottom:16px}.result{white-space:pre-wrap;overflow-wrap:anywhere;color:#d7e1f2;font-size:12px;line-height:1.6;margin-top:8px}.report{font-size:12px;padding:6px 10px;margin-top:8px}button:disabled{opacity:.55;cursor:not-allowed}</style></head><body>
+<header><div class="tag">GROWTH STUDIO / AI HQ</div><h1>🏢 AI制作本部</h1><p>自由指示はChatGPTで一元化。GitHubには開発・検査・PRの結果を残します。GitHub画面への移動と毎回のトークン入力は、通常運用では不要です。</p></header>
 <main>
 <section class="panel"><div class="row"><h2>全体状況</h2><button class="secondary" id="refresh">↻ 更新</button></div><div class="metrics"><div class="metric"><b id="active">-</b><span>進行中・未完了</span></div><div class="metric"><b id="waiting">-</b><span>確認待ち</span></div><div class="metric"><b id="failed">-</b><span>問題あり</span></div></div><p id="sync" class="hint">GitHubから状況を読み込みます。</p></section>
-<section class="panel"><h2>🔐 GitHubに直接接続</h2>
+<section class="panel" id="ai-manager">
+  <div class="row"><h2>🧠 AI統括マネージャー（推奨）</h2><span class="pill">トークン不要</span></div>
+  <p>自由な指示はChatGPTのこの制作本部チャットへ。接続済みGitHubを使って調査・コード修正・PR作成・結果報告を行うルートです。WebサイトからChatGPTへ自動送信する機能ではありません。</p>
+  <label for="ai-team">担当事業</label><select id="ai-team">
+    <option value="video">🎬 YouTube動画制作</option>
+    <option value="video-dev">⚙️ 動画フロー開発</option>
+    <option value="sticker">💬 LINEスタンプ</option>
+    <option value="emoji">😊 LINE絵文字</option>
+    <option value="ios">📱 iOSアプリ</option>
+    <option value="all" selected>🏢 全部署・統括</option>
+  </select>
+  <label for="ai-request">自由に指示する</label>
+  <textarea id="ai-request" rows="4" placeholder="例：みんなの本棚の登録機能を開発して、テスト後にPRを作成して。必要な確認だけ聞いて"></textarea>
+  <div class="buttons">
+    <button id="ai-copy">ChatGPT用の指示をコピー</button>
+    <a class="action secondary" href="https://chatgpt.com/" target="_blank" rel="noopener">ChatGPTを開く</a>
+  </div>
+  <p id="ai-copy-status" class="hint" aria-live="polite">このチャットを開いているなら、ここに書かずにチャットへ直接指示してもOKです。</p>
+  <p class="hint">AIの作業はChatGPTで会話を開始したときに実行されます。サイトだけで24時間自律稼働するわけではありません。機密情報は公開GitHub Issueへ書き込まない方針です。</p>
+</section>
+<details class="panel" id="advanced-token"><summary>🔑 高度な設定：GitHubに直接送信（トークン方式）</summary>
+<section><h2>GitHub直接接続</h2>
 <p class="hint">最初に一度、GitHubのfine-grainedトークン（対象リポジトリの Issues: Read and write のみ）を貼り付けて接続します。トークンはブラウザ内の一時メモリだけに保持し、ページ再読み込みで消えます。公開ページやGitHub Issueには保存しません。</p>
 <label for="gh-token">GitHub Fine-grained Personal Access Token</label>
 <input type="password" id="gh-token" placeholder="github_pat_…" autocomplete="off" autocapitalize="off" spellcheck="false">
 <div class="buttons"><button id="connect" class="secondary">接続を確認</button><button id="disconnect" class="secondary" disabled>切断</button><a class="action secondary" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">初回のトークン発行</a></div>
 <p id="auth-status" class="hint" role="status" aria-live="polite">未接続。トークンを貼って接続してください。</p>
-</section>
-<section class="panel"><h2>📣 統括マネージャーへ指示</h2>
+</section></details>
+<section class="panel"><h2>📣 GitHubワーカーへ定型指示</h2>
 <label for="team">担当事業</label><select id="team"><option value="video">🎬 YouTube動画制作</option><option value="video-dev">⚙️ 動画フロー開発</option><option value="sticker">💬 LINEスタンプ</option><option value="emoji">😊 LINE絵文字</option><option value="ios">📱 iOSアプリ</option><option value="all">🏢 全部署・統括</option></select>
 <label for="request">やってほしいこと</label><textarea id="request" rows="4" placeholder="例：LINEスタンプのZIP生成で失敗した原因を調べ、修正案と検証結果をまとめて"></textarea>
 <div class="buttons"><button id="create">司令塔から直接送信</button><button class="secondary" id="copy">ChatGPTへの指示文をコピー</button></div><p id="submit-result" class="hint" role="status" aria-live="polite"></p>
@@ -68,6 +89,20 @@ const dept=[
 ['all','🧠 統括・品質管理','タスク配分・進捗・品質・報告','統括']
 ];
 const $=id=>document.getElementById(id);
+const hqDeptNames={video:'YouTube動画制作','video-dev':'YouTube動画フロー開発',sticker:'LINEスタンプ制作・申請準備',emoji:'LINE絵文字制作・申請準備',ios:'みんなの本棚 iOSアプリ開発',all:'5事業全体の統括'};
+$('ai-copy').onclick=async()=>{
+  const task=$('ai-request').value.trim();
+  if(!task){$('ai-copy-status').textContent='まずやってほしいことを入力してください。';return}
+  const dep=$('ai-team').value;
+  const prompt='あなたは「AI制作本部」の統括マネージャーです。担当部署：'+hqDeptNames[dep]+'。\n'+
+  '次の指示を実際の作業として進めてください。接続済みGitHubを使用して現行コード・Issue・PRを確認し、必要なら別ブランチで実装・検証・PR作成まで行ってください。\n'+
+  '既存の本番動画公開・LINE審査申請・外部への公開・課金は事前承認を必要とします。実行できない操作は明確に示し、実施していない作業を完了と言わないでください。\n'+
+  '指示：'+task+'\n'+
+  '最後に、実行内容・実際の成果物URL・検証結果・未完了事項を簡潔に報告してください。';
+  try{await navigator.clipboard.writeText(prompt);$('ai-copy-status').textContent='コピーしました。ChatGPTの制作本部チャットに貼り付けて送信してください。'}
+  catch(e){$('ai-copy-status').textContent='自動コピーできませんでした。下に表示する内容をコピーしてください。';$('ai-request').value=prompt;$('ai-request').select()}
+};
+
 $('quick-search').onclick=()=>{$('team').value='ios';$('request').value='みんなの本棚に検索機能を追加して';window.scrollTo({top:180,behavior:'smooth'})};
 $('quick-export').onclick=()=>{$('team').value='ios';$('request').value='みんなの本棚のサンプルデータをJSON書き出しできるようにして';window.scrollTo({top:180,behavior:'smooth'})};
 $('departments').innerHTML=dept.map(d=>'<div class="dept"><strong>'+d[1]+'</strong><small>'+d[2]+'</small><button class="secondary pick" data-team="'+d[0]+'">仕事を依頼</button></div>').join('');
