@@ -1,0 +1,68 @@
+name: AI HQ triage and daily audit
+on:
+  issues:
+    types: [opened, edited, reopened]
+  schedule:
+    - cron: '0 21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Classify incoming task by department
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = context.payload.issue.title || '';
+            const rules = [
+              ['[動画制作]', 'department-video'],
+              ['[動画フロー開発]', 'department-video-dev'],
+              ['[LINEスタンプ]', 'department-sticker'],
+              ['[LINE絵文字]', 'department-emoji'],
+              ['[iOSアプリ]', 'department-ios'],
+              ['[統括]', 'department-hq']
+            ];
+            const entry = rules.find(([prefix]) => title.startsWith(prefix));
+            if (!entry) return;
+            const label = entry[1];
+            const { owner, repo } = context.repo;
+            try {
+              await github.rest.issues.createLabel({owner,repo,name:label,color:'3169a7',description:'AI HQ department classification'});
+            } catch (err) {
+              if (err.status !== 422) throw err;
+            }
+            await github.rest.issues.addLabels({owner,repo,issue_number:context.issue.number,labels:[label]});
+  audit:
+    if: github.event_name != 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summarize open tasks without changing production
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const {owner,repo} = context.repo;
+            const items = await github.paginate(github.rest.issues.listForRepo,{owner,repo,state:'open',per_page:100});
+            const tasks = items.filter(i => !i.pull_request);
+            const count = name => tasks.filter(i => i.labels.some(l=>l.name===name)).length;
+            const lines=[
+              '# AI HQ daily overview',
+              '',
+              'Open tasks: '+tasks.length,
+              'Approval pending: '+count('needs-approval'),
+              'Blocked: '+count('blocked'),
+              '',
+              '## Departments',
+              ...['video','video-dev','sticker','emoji','ios','hq'].map(d=>'- '+d+': '+count('department-'+d)),
+              '',
+              '## Open work',
+              ...tasks.map(i=>'- #'+i.number+' '+i.title),
+              '',
+              'Note: this is an issue registry audit, NOT autonomous AI execution or verification of private workflows.'
+            ];
+            await core.summary.addRaw(lines.join('\n')).write();
